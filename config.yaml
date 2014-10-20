@@ -1,0 +1,6 @@
+domain: localdomain
+backends:
+    localhost:
+        - http://localhost:8080/
+vhosts:
+    localhost: localhost
