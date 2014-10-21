@@ -23,7 +23,7 @@ director {{ name }} round-robin {
 
 backend status {
    .host = "localhost";
-   .port = "8080";
+   .port = "10999";
    .connect_timeout = 10s;
    .first_byte_timeout = 10s;
    .between_bytes_timeout = 10s;
@@ -81,7 +81,7 @@ sub vcl_recv {
   unset req.http.cookie;
   set req.grace = 1h;
 
-  if (req.http.host == "localhost") {
+  if (req.http.host == "varnish-monitor") {
     set req.backend = status;
   }
   

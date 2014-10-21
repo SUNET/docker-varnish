@@ -3,14 +3,33 @@
 from jinja2 import Template
 import yaml
 import sys
+import os
 from urlparse import urlparse
 
-with open(sys.argv[1]) as config:
-    data = yaml.load(config.read())
-    data['uris'] = dict()
-    for name,members in data['backends'].iteritems():
-        for member in members:
-            data['uris'][member] = urlparse(member)
-    with open(sys.argv[2]) as template:
+def _render(d):
+    with open(sys.argv[1]) as template:
         t = Template(template.read())
-        print t.render(**data)
+        print t.render(**d)
+
+
+data = None
+if len(sys.argv) == 2:
+     with open(sys.argv[1]) as config:
+         data = yaml.load(config.read())
+elif 'BACKEND_PORT' in os.environ:
+    backend_uri = os.environ['BACKEND_PORT']
+    backend_uri = backend_uri.replace("tcp://","http://")
+    if not backend_uri.endswith("/"):
+        backend_uri = "%s/" % backend_uri
+    public_name = 'localhost'
+    data = dict(domain='localdomain',backends=dict(backend=[backend_uri]),vhosts=dict())
+else:
+    print "No linked applications and no config" 
+    sys.exit(-1)
+
+data['uris'] = dict()
+for name,members in data['backends'].iteritems():
+    for member in members:
+        data['uris'][member] = urlparse(member)
+
+_render(data)
