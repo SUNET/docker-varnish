@@ -13,8 +13,8 @@ def _render(d):
 
 
 data = None
-if len(sys.argv) == 2:
-     with open(sys.argv[1]) as config:
+if len(sys.argv) == 3:
+     with open(sys.argv[2]) as config:
          data = yaml.load(config.read())
 elif 'BACKEND_PORT' in os.environ:
     backend_uri = os.environ['BACKEND_PORT']
