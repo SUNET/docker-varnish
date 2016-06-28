@@ -7,7 +7,7 @@ director {{ name }} round-robin {
      .backend = {
        .host = "{{ uri.hostname }}";
 {% if name in vhosts %}       .host_header = "{{ vhosts[name] }}"; {% endif %}
-       .port = "{{ uri.port }}";
+       .port = "{{ uri.port if uri.port != None else 80 }}";
        .probe = {
          .url = "{{ uri.path }}";
          .timeout = 30s;
