@@ -9,5 +9,4 @@ service varnish-monitor
         group           = root
         groups          = yes
         server          = /etc/varnish/monitor.sh
-        bind            = 0.0.0.0
 }
