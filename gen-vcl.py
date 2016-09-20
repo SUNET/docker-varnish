@@ -22,7 +22,16 @@ elif 'BACKEND_PORT' in os.environ:
     if not backend_uri.endswith("/"):
         backend_uri = "%s/" % backend_uri
     public_name = 'localhost'
-    data = dict(domain='localdomain',backends=dict(backend=[backend_uri]),vhosts=dict())
+    backends=dict(backend=[backend_uri])
+    data = dict(domain='localdomain',vhosts=dict(),default_backend='backend')
+    if 'ACME_PORT' in os.environ:
+       acme_uri = os.environ['ACME_PORT']
+       acme_uri = acme_uri.replace("tcp://","http://")
+       if not acme_uri.endswith("/"):
+           acme_uri = "%s/" % acme_uri
+       backends['acme'] = [acme_uri]
+       data['acme_backend'] = 'acme'
+    data['backends'] = backends
 else:
     print "No linked applications and no config" 
     sys.exit(-1)
