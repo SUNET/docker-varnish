@@ -4,5 +4,26 @@ echo "varnish-monitor 10999/tcp" >> /etc/services
 service xinetd start
 
 /gen-vcl.py vcl.j2 $CONFIG > /etc/varnish/default.vcl
-. /etc/default/varnish
+
+START=yes
+VARNISH_VCL_CONF=/etc/varnish/default.vcl
+VARNISH_LISTEN_ADDRESS=
+VARNISH_LISTEN_PORT=80
+VARNISH_ADMIN_LISTEN_ADDRESS=127.0.0.1
+VARNISH_ADMIN_LISTEN_PORT=6082
+VARNISH_MIN_THREADS=1
+VARNISH_MAX_THREADS=1000
+VARNISH_THREAD_TIMEOUT=120
+VARNISH_STORAGE_FILE=/var/lib/varnish/$INSTANCE/varnish_storage.bin
+VARNISH_STORAGE_SIZE=1G
+VARNISH_SECRET_FILE=/etc/varnish/secret
+VARNISH_STORAGE="file,${VARNISH_STORAGE_FILE},${VARNISH_STORAGE_SIZE}"
+VARNISH_TTL=120
+DAEMON_OPTS="-a ${VARNISH_LISTEN_ADDRESS}:${VARNISH_LISTEN_PORT} \
+              -f ${VARNISH_VCL_CONF} \
+              -T ${VARNISH_ADMIN_LISTEN_ADDRESS}:${VARNISH_ADMIN_LISTEN_PORT} \
+              -t ${VARNISH_TTL} \
+              -S ${VARNISH_SECRET_FILE} \
+              -s ${VARNISH_STORAGE}"
+
 varnishd -F $DAEMON_OPTS

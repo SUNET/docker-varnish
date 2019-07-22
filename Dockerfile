@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM debian:stable
 MAINTAINER Leif Johansson <leifj@mnt.se>
 RUN apt-get -q update
 RUN apt-get -y upgrade
